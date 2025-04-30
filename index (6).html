@@ -1,0 +1,331 @@
+<html lang="id" class="scroll-smooth" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pelacak Lokasi Akurat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+  <header class="bg-blue-600 text-white shadow-md">
+    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <h1 class="text-xl font-semibold flex items-center gap-2">
+        <i class="fas fa-map-marker-alt"></i> Pelacak Lokasi Akurat
+      </h1>
+      <nav class="hidden sm:flex space-x-6 text-sm font-medium">
+        <a href="#generate" class="hover:underline">Buat Link</a>
+        <a href="#track" class="hover:underline">Lacak Lokasi</a>
+        <a href="#about" class="hover:underline">Tentang</a>
+      </nav>
+      <button
+        id="menu-btn"
+        class="sm:hidden focus:outline-none focus:ring-2 focus:ring-white"
+        aria-label="Toggle menu"
+      >
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </div>
+    <div
+      id="mobile-menu"
+      class="sm:hidden hidden bg-blue-700 px-4 pb-4 space-y-2 text-white text-center"
+    >
+      <a href="#generate" class="block py-2 hover:underline">Buat Link</a>
+      <a href="#track" class="block py-2 hover:underline">Lacak Lokasi</a>
+      <a href="#about" class="block py-2 hover:underline">Tentang</a>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-4xl mx-auto px-4 py-8 w-full">
+    <section id="generate" class="mb-12">
+      <h2 class="text-3xl font-semibold mb-4 text-center text-blue-700">
+        Buat Link Pelacakan Lokasi
+      </h2>
+      <p class="text-center mb-6 text-gray-700">
+        Kirimkan link ini ke seseorang, dan ketika mereka membuka link tersebut,
+        lokasi mereka akan dikirimkan kembali secara akurat.
+      </p>
+      <form
+        id="generate-form"
+        class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md"
+        autocomplete="off"
+      >
+        <label for="recipient" class="block mb-2 font-medium text-gray-800"
+          >Nama Penerima (opsional)</label
+        >
+        <input
+          type="text"
+          id="recipient"
+          name="recipient"
+          placeholder="Misal: Budi"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition"
+        >
+          Buat Link Pelacakan
+        </button>
+      </form>
+
+      <div
+        id="link-result"
+        class="mt-6 max-w-xl mx-auto bg-green-50 border border-green-300 text-green-800 p-4 rounded-md break-words hidden"
+      ></div>
+    </section>
+
+    <section id="track" class="mb-12">
+      <h2 class="text-3xl font-semibold mb-4 text-center text-blue-700">
+        Lacak Lokasi dari Link
+      </h2>
+      <p class="text-center mb-6 text-gray-700">
+        Jika Anda menerima link pelacakan, buka halaman ini dan masukkan kode
+        pelacakan untuk melihat lokasi terkini.
+      </p>
+      <form
+        id="track-form"
+        class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md"
+        autocomplete="off"
+      >
+        <label for="tracking-code" class="block mb-2 font-medium text-gray-800"
+          >Kode Pelacakan</label
+        >
+        <input
+          type="text"
+          id="tracking-code"
+          name="tracking-code"
+          placeholder="Masukkan kode pelacakan"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition"
+        >
+          Lacak Lokasi
+        </button>
+      </form>
+
+      <div
+        id="location-result"
+        class="mt-6 max-w-xl mx-auto bg-white border border-gray-300 p-6 rounded-lg shadow-md hidden"
+      >
+        <h3 class="text-xl font-semibold mb-2 text-blue-700" id="location-name"></h3>
+        <p class="mb-2 text-gray-700" id="location-coords"></p>
+        <p class="mb-4 text-gray-600 italic" id="location-time"></p>
+        <div class="w-full h-64 rounded-md overflow-hidden shadow-md">
+          <img
+            id="location-map"
+            src=""
+            alt="Peta lokasi terkini"
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="mb-12 max-w-xl mx-auto text-center text-gray-700">
+      <h2 class="text-3xl font-semibold mb-4 text-blue-700">Tentang Aplikasi</h2>
+      <p class="mb-4">
+        Aplikasi ini memungkinkan Anda membuat link pelacakan lokasi yang dapat
+        dikirimkan ke seseorang. Ketika link dibuka, lokasi pengguna akan
+        dikirimkan secara otomatis dan dapat Anda lacak dengan kode pelacakan
+        yang diberikan.
+      </p>
+      <p>
+        Teknologi ini menggunakan API Geolocation browser dan penyimpanan data
+        sederhana di localStorage untuk demo. Untuk penggunaan nyata, Anda
+        perlu backend untuk menyimpan dan mengelola data lokasi secara aman.
+      </p>
+    </section>
+  </main>
+
+  <footer class="bg-blue-600 text-white py-6 mt-auto">
+    <div class="max-w-4xl mx-auto px-4 text-center text-sm">
+      &copy; 2024 Pelacak Lokasi Akurat. Semua hak cipta dilindungi.
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Utility: generate random tracking code
+    function generateTrackingCode(length = 8) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = '';
+      for (let i = 0; i < length; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return code;
+    }
+
+    // Save location data to localStorage by tracking code
+    function saveLocationData(code, data) {
+      let allData = JSON.parse(localStorage.getItem('locationData')) || {};
+      allData[code] = data;
+      localStorage.setItem('locationData', JSON.stringify(allData));
+    }
+
+    // Get location data by tracking code
+    function getLocationData(code) {
+      let allData = JSON.parse(localStorage.getItem('locationData')) || {};
+      return allData[code] || null;
+    }
+
+    // Create tracking link with code and optional recipient name
+    function createTrackingLink(code, recipient) {
+      const baseUrl = window.location.origin + window.location.pathname;
+      let url = new URL(baseUrl);
+      url.searchParams.set('track', code);
+      if (recipient) {
+        url.searchParams.set('r', encodeURIComponent(recipient));
+      }
+      return url.toString();
+    }
+
+    // Show generated link
+    const linkResult = document.getElementById('link-result');
+    const generateForm = document.getElementById('generate-form');
+
+    generateForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const recipient = generateForm.recipient.value.trim();
+      const code = generateTrackingCode(8);
+      // Save empty data placeholder for this code
+      saveLocationData(code, null);
+      const link = createTrackingLink(code, recipient);
+      linkResult.innerHTML = `<strong>Link pelacakan berhasil dibuat:</strong><br /><a href="${link}" class="text-blue-700 underline break-all" target="_blank" rel="noopener noreferrer">${link}</a><br /><br />Kode pelacakan: <code class="bg-gray-100 px-2 py-1 rounded">${code}</code>`;
+      linkResult.classList.remove('hidden');
+      generateForm.reset();
+    });
+
+    // Track form
+    const trackForm = document.getElementById('track-form');
+    const locationResult = document.getElementById('location-result');
+    const locationName = document.getElementById('location-name');
+    const locationCoords = document.getElementById('location-coords');
+    const locationTime = document.getElementById('location-time');
+    const locationMap = document.getElementById('location-map');
+
+    trackForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = trackForm['tracking-code'].value.trim().toUpperCase();
+      if (!code) return;
+
+      const data = getLocationData(code);
+      if (!data) {
+        alert('Kode pelacakan tidak ditemukan atau belum ada data lokasi.');
+        locationResult.classList.add('hidden');
+        return;
+      }
+      if (!data.coords) {
+        alert('Lokasi belum dikirimkan oleh penerima link.');
+        locationResult.classList.add('hidden');
+        return;
+      }
+
+      locationName.textContent = data.recipient
+        ? `Lokasi ${data.recipient}`
+        : 'Lokasi Terkini';
+      locationCoords.textContent = `Latitude: ${data.coords.latitude.toFixed(
+        6
+      )}, Longitude: ${data.coords.longitude.toFixed(6)}`;
+      locationTime.textContent = `Diperbarui pada: ${new Date(
+        data.timestamp
+      ).toLocaleString('id-ID')}`;
+
+      // Use static map image from placehold.co with marker
+      // We'll use Google Maps Static API style URL but since no API key, fallback to placeholder with coords text
+      // So we create a placeholder image with text "Lokasi: lat, lng"
+      const lat = data.coords.latitude.toFixed(6);
+      const lng = data.coords.longitude.toFixed(6);
+      const mapText = encodeURIComponent(`Lokasi: ${lat}, ${lng}`);
+      const mapUrl = `https://placehold.co/600x400/png?text=${mapText}&font=Inter&font-size=20&fg=003366&bg=99ccff`;
+
+      locationMap.src = mapUrl;
+      locationMap.alt = `Peta lokasi terkini dengan koordinat latitude ${lat} dan longitude ${lng}`;
+
+      locationResult.classList.remove('hidden');
+    });
+
+    // When someone opens the tracking link, detect location and save it
+    async function detectAndSendLocation() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('track');
+      const recipient = urlParams.get('r') ? decodeURIComponent(urlParams.get('r')) : null;
+      if (!code) return;
+
+      // Check if location already sent recently (to avoid multiple sends)
+      const lastSentKey = `lastSent_${code}`;
+      const lastSent = localStorage.getItem(lastSentKey);
+      const now = Date.now();
+      if (lastSent && now - parseInt(lastSent) < 5 * 60 * 1000) {
+        // If sent less than 5 minutes ago, do nothing
+        return;
+      }
+
+      if (!navigator.geolocation) {
+        alert('Geolocation tidak didukung oleh browser Anda.');
+        return;
+      }
+
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0,
+          });
+        });
+
+        const coords = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+        };
+        const timestamp = position.timestamp;
+
+        // Save location data with recipient name if available
+        saveLocationData(code, { coords, timestamp, recipient });
+
+        localStorage.setItem(lastSentKey, now.toString());
+
+        // Show confirmation message
+        document.body.innerHTML = `
+          <main class="max-w-xl mx-auto px-4 py-20 text-center">
+            <img src="https://placehold.co/150x150/png?text=Lokasi+Terkirim&font=Inter&font-size=18&fg=ffffff&bg=22c55e" alt="Ikon lokasi terkirim berwarna hijau" class="mx-auto mb-6 rounded-full shadow-lg" />
+            <h2 class="text-2xl font-semibold text-green-700 mb-4">Lokasi Anda telah berhasil dikirimkan.</h2>
+            <p class="text-gray-700 mb-6">Terima kasih telah membagikan lokasi Anda.</p>
+            <a href="${window.location.origin + window.location.pathname}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition">Kembali ke Beranda</a>
+          </main>
+        `;
+      } catch (error) {
+        alert(
+          'Gagal mendapatkan lokasi. Pastikan Anda mengizinkan akses lokasi dan coba lagi.'
+        );
+      }
+    }
+
+    // Run location detection if URL has track param
+    detectAndSendLocation();
+  </script>
+</body>
+</html>
